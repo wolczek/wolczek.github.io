@@ -1,0 +1,294 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>demontagu.com - simple gallery generator</title>
+</head>
+<body>
+<pre style='color:#000000;background:#ffffff;'><span style='color:#696969; '>#!/usr/bin/perl</span>
+
+<span style='color:#696969; '># gallery generator v2.1</span>
+<span style='color:#696969; '># by demontagu.com</span>
+
+
+<span style='color:#800000; font-weight:bold; '>my</span> %gals <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span>  <span style='color:#0000e6; '>"</span><span style='color:#008c00; '>01</span><span style='color:#0000e6; '>"</span> <span style='color:#808030; '>=</span><span style='color:#808030; '>></span> <span style='color:#0000e6; '>"montenegro"</span><span style='color:#808030; '>,</span>
+              <span style='color:#0000e6; '>"</span><span style='color:#008c00; '>02</span><span style='color:#0000e6; '>"</span> <span style='color:#808030; '>=</span><span style='color:#808030; '>></span> <span style='color:#0000e6; '>"people"</span><span style='color:#808030; '>,</span>
+              <span style='color:#0000e6; '>"</span><span style='color:#008c00; '>03</span><span style='color:#0000e6; '>"</span> <span style='color:#808030; '>=</span><span style='color:#808030; '>></span> <span style='color:#0000e6; '>"slum area"</span><span style='color:#808030; '>,</span>
+           <span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+
+
+<span style='color:#800000; font-weight:bold; '>my</span> $gallery_name<span style='color:#800080; '>;</span>
+<span style='color:#800000; font-weight:bold; '>my</span> @galfiles <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span> <span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+<span style='color:#800000; font-weight:bold; '>my</span> %galdesc <span style='color:#808030; '>=</span> <span style='color:#800080; '>{</span><span style='color:#800080; '>}</span><span style='color:#800080; '>;</span>
+
+<span style='color:#800000; font-weight:bold; '>sub </span>extract_string
+<span style='color:#800080; '>{</span>
+    <span style='color:#800000; font-weight:bold; '>my</span> $file <span style='color:#808030; '>=</span> <span style='color:#800000; font-weight:bold; '>shift</span><span style='color:#800080; '>;</span>
+    <span style='color:#800000; font-weight:bold; '>my</span> $ret<span style='color:#800080; '>;</span>
+
+    <span style='color:#800000; font-weight:bold; '>open</span> <span style='color:#808030; '>(</span>INPUT<span style='color:#808030; '>,</span> <span style='color:#0000e6; '>"&lt;"</span><span style='color:#808030; '>,</span> $file<span style='color:#808030; '>)</span> <span style='color:#808030; '>or</span> <span style='color:#800000; font-weight:bold; '>return</span> <span style='color:#0000e6; '>""</span><span style='color:#800080; '>;</span>
+    <span style='color:#800000; font-weight:bold; '>while</span> <span style='color:#808030; '>(</span><span style='color:#40015a; '>&lt;INPUT></span><span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+        $ret <span style='color:#808030; '>.</span><span style='color:#808030; '>=</span> $_<span style='color:#800080; '>;</span>
+    <span style='color:#800080; '>}</span>
+    <span style='color:#800000; font-weight:bold; '>close</span> <span style='color:#808030; '>(</span>INPUT<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+    
+    $ret <span style='color:#808030; '>=</span><span style='color:#808030; '>~</span> <span style='color:#800000; font-weight:bold; '>s</span><span style='color:#800000; '>/</span><span style='color:#0f69ff; '>\n</span><span style='color:#800000; '>/</span><span style='color:#0000e6; '> </span><span style='color:#800000; '>/</span><span style='color:#800000; font-weight:bold; '>g</span><span style='color:#800080; '>;</span>
+    $ret <span style='color:#808030; '>=</span><span style='color:#808030; '>~</span> <span style='color:#800000; font-weight:bold; '>s</span><span style='color:#800000; '>/</span><span style='color:#808030; '>^</span><span style='color:#0000e6; '>\s</span><span style='color:#808030; '>+</span><span style='color:#800000; '>/</span><span style='color:#800000; '>/</span><span style='color:#800080; '>;</span>
+    $ret <span style='color:#808030; '>=</span><span style='color:#808030; '>~</span> <span style='color:#800000; font-weight:bold; '>s</span><span style='color:#800000; '>/</span><span style='color:#0000e6; '>\s</span><span style='color:#808030; '>+</span><span style='color:#808030; '>$</span><span style='color:#800000; '>/</span><span style='color:#800000; '>/</span><span style='color:#800080; '>;</span>
+    
+    <span style='color:#800000; font-weight:bold; '>return</span> $ret<span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+
+<span style='color:#800000; font-weight:bold; '>sub </span>counstructor
+<span style='color:#800080; '>{</span>
+    $gallery_name <span style='color:#808030; '>=</span> extract_string<span style='color:#808030; '>(</span><span style='color:#0000e6; '>"desc/gallery.txt"</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+    <span style='color:#800000; font-weight:bold; '>print</span> <span style='color:#0000e6; '>"Gallery: "</span><span style='color:#808030; '>.</span>$gallery_name<span style='color:#808030; '>.</span><span style='color:#0000e6; '>"</span><span style='color:#0f69ff; '>\n</span><span style='color:#0000e6; '>"</span><span style='color:#800080; '>;</span>
+    
+    <span style='color:#800000; font-weight:bold; '>opendir</span><span style='color:#808030; '>(</span>DIRHANDLE<span style='color:#808030; '>,</span> <span style='color:#0000e6; '>"images"</span><span style='color:#808030; '>)</span> <span style='color:#808030; '>or</span> <span style='color:#800000; font-weight:bold; '>die</span> <span style='color:#0000e6; '>"couldn't open images : $!"</span><span style='color:#800080; '>;</span>
+
+    <span style='color:#800000; font-weight:bold; '>while</span> <span style='color:#808030; '>(</span> <span style='color:#800000; font-weight:bold; '>defined</span> <span style='color:#808030; '>(</span><span style='color:#800000; font-weight:bold; '>my</span> $filename <span style='color:#808030; '>=</span> <span style='color:#800000; font-weight:bold; '>readdir</span><span style='color:#808030; '>(</span>DIRHANDLE<span style='color:#808030; '>)</span><span style='color:#808030; '>)</span> <span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+        <span style='color:#800000; font-weight:bold; '>if</span> <span style='color:#808030; '>(</span>$filename <span style='color:#808030; '>=</span><span style='color:#808030; '>~</span> <span style='color:#800000; font-weight:bold; '>m</span><span style='color:#800000; '>/</span><span style='color:#0000e6; '>\d</span><span style='color:#0000e6; '>\d</span><span style='color:#808030; '>.</span><span style='color:#808030; '>*</span><span style='color:#800000; '>/</span><span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+            <span style='color:#800000; font-weight:bold; '>push</span> <span style='color:#808030; '>(</span>@galfiles<span style='color:#808030; '>,</span> $filename<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+            
+            <span style='color:#800000; font-weight:bold; '>my</span> $desctxt <span style='color:#808030; '>=</span> $filename<span style='color:#800080; '>;</span>
+            $desctxt <span style='color:#808030; '>=</span><span style='color:#808030; '>~</span> <span style='color:#800000; font-weight:bold; '>s</span><span style='color:#800000; '>/</span><span style='color:#0f69ff; '>\.</span><span style='color:#0000e6; '>jpg</span><span style='color:#800000; '>/</span><span style='color:#0f69ff; '>\.</span><span style='color:#0000e6; '>txt</span><span style='color:#800000; '>/</span><span style='color:#800080; '>;</span>
+            $desctxt <span style='color:#808030; '>=</span> extract_string<span style='color:#808030; '>(</span><span style='color:#0000e6; '>"desc/"</span><span style='color:#808030; '>.</span>$desctxt<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+            
+            $galdesc<span style='color:#800080; '>{</span>$filename<span style='color:#800080; '>}</span> <span style='color:#808030; '>=</span> $desctxt<span style='color:#800080; '>;</span>
+            
+        <span style='color:#800080; '>}</span>
+    <span style='color:#800080; '>}</span>
+    <span style='color:#800000; font-weight:bold; '>closedir</span><span style='color:#808030; '>(</span>DIRHANDLE<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+
+<span style='color:#800000; font-weight:bold; '>sub </span>gen_menu
+<span style='color:#800080; '>{</span>
+    <span style='color:#800000; font-weight:bold; '>my</span> $gal <span style='color:#808030; '>=</span> <span style='color:#800000; font-weight:bold; '>shift</span><span style='color:#800080; '>;</span>
+
+    <span style='color:#800000; font-weight:bold; '>my</span> $menu <span style='color:#808030; '>=</span> 
+<span style='color:#0000e6; '>'&lt;!-- begin menu --></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&lt;div class="menu"></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;table></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;tr>&lt;td>&lt;/td>&lt;td></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;a href="../../">&lt;span class="menu_l1">home&lt;/span>&lt;/a></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/td>&lt;/tr></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;tr>&lt;td>&lt;/td>&lt;td></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;span class="menu_l1">galleries&lt;/span></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/td>&lt;/tr></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;'</span><span style='color:#800080; '>;</span>
+        
+        
+    <span style='color:#800000; font-weight:bold; '>foreach</span> $galindex <span style='color:#808030; '>(</span><span style='color:#800000; font-weight:bold; '>sort</span> <span style='color:#800000; font-weight:bold; '>keys</span> %gals<span style='color:#808030; '>)</span>
+    <span style='color:#800080; '>{</span>
+        <span style='color:#800000; font-weight:bold; '>if</span> <span style='color:#808030; '>(</span>$gal <span style='color:#808030; '>eq</span> $gals<span style='color:#800080; '>{</span>$galindex<span style='color:#800080; '>}</span><span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+            $menu <span style='color:#808030; '>.</span><span style='color:#808030; '>=</span> <span style='color:#0000e6; '>'&lt;tr>&lt;td>&lt;img title="active" alt="active" src="../../nav/nav_active.png" border="0" />&lt;/td>&lt;td></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;'</span><span style='color:#800080; '>;</span>
+        <span style='color:#800080; '>}</span> <span style='color:#800000; font-weight:bold; '>else</span> <span style='color:#800080; '>{</span>
+            $menu <span style='color:#808030; '>.</span><span style='color:#808030; '>=</span> <span style='color:#0000e6; '>'&lt;tr>&lt;td>&lt;/td>&lt;td></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;'</span><span style='color:#800080; '>;</span>
+        <span style='color:#800080; '>}</span>
+        $menu <span style='color:#808030; '>.</span><span style='color:#808030; '>=</span> <span style='color:#0000e6; '>'&lt;p class="menu_l2p"></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;a href="../../galleries/'</span><span style='color:#808030; '>.</span>$galindex<span style='color:#808030; '>.</span><span style='color:#0000e6; '>'/01.html">&lt;span class="menu_l2">'</span><span style='color:#808030; '>.</span>$gals<span style='color:#800080; '>{</span>$galindex<span style='color:#800080; '>}</span><span style='color:#808030; '>.</span><span style='color:#0000e6; '>'&lt;/span>&lt;/a></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/p></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/td>&lt;/tr></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;'</span><span style='color:#800080; '>;</span>
+    <span style='color:#800080; '>}</span>
+        
+        
+    $menu <span style='color:#808030; '>.</span><span style='color:#808030; '>=</span> <span style='color:#0000e6; '>'</span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;tr>&lt;td>&lt;/td>&lt;td></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;span class="menu_l2">&amp;nbsp;&lt;/span></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/td>&lt;/tr></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;tr>&lt;td>&lt;/td>&lt;td></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;a href="../../links.html">&lt;span class="menu_l1">links&lt;/span>&lt;/a></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/td>&lt;/tr></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;tr>&lt;td>&lt;/td>&lt;td></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;a href="../../about.html">&lt;span class="menu_l1">about&lt;/span>&lt;/a></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/td>&lt;/tr></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;tr>&lt;td>&lt;/td>&lt;td></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;span class="menu_l1">&amp;nbsp;&lt;/span></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/td>&lt;/tr></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/table></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&lt;/div></span>
+<span style='color:#0000e6; '>&lt;!-- end menu --></span>
+<span style='color:#0000e6; '>'</span>    <span style='color:#800080; '>;</span>
+    <span style='color:#800000; font-weight:bold; '>return</span> $menu<span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+
+<span style='color:#800000; font-weight:bold; '>sub </span>gen_thumbs
+<span style='color:#800080; '>{</span>
+    <span style='color:#800000; font-weight:bold; '>my</span> $hightlight <span style='color:#808030; '>=</span> <span style='color:#800000; font-weight:bold; '>shift</span><span style='color:#800080; '>;</span>
+    <span style='color:#800000; font-weight:bold; '>my</span> $thumbs<span style='color:#800080; '>;</span>
+    
+    $thumbs <span style='color:#808030; '>.</span><span style='color:#808030; '>=</span> <span style='color:#0000e6; '>'&lt;!-- begin thumbs --></span>
+<span style='color:#0000e6; '>&lt;table width="500"></span>
+<span style='color:#0000e6; '>&lt;tr>'</span>
+<span style='color:#800080; '>;</span>
+    
+    <span style='color:#800000; font-weight:bold; '>foreach</span> <span style='color:#800000; font-weight:bold; '>my</span> $filename <span style='color:#808030; '>(</span>@galfiles<span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+        <span style='color:#800000; font-weight:bold; '>if</span> <span style='color:#808030; '>(</span>$filename <span style='color:#808030; '>=</span><span style='color:#808030; '>~</span> <span style='color:#800000; font-weight:bold; '>m</span><span style='color:#800000; '>/</span><span style='color:#808030; '>(</span><span style='color:#0000e6; '>\d</span><span style='color:#0000e6; '>\d</span><span style='color:#808030; '>)</span><span style='color:#808030; '>.</span><span style='color:#808030; '>*</span><span style='color:#800000; '>/</span><span style='color:#808030; '>)</span> 
+        <span style='color:#800080; '>{</span>
+            <span style='color:#800000; font-weight:bold; '>my</span> $imgno <span style='color:#808030; '>=</span> $1<span style='color:#800080; '>;</span>
+            <span style='color:#800000; font-weight:bold; '>my</span> $desctxt <span style='color:#808030; '>=</span> $galdesc<span style='color:#800080; '>{</span>$filename<span style='color:#800080; '>}</span><span style='color:#800080; '>;</span>
+            <span style='color:#800000; font-weight:bold; '>my</span> $border <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span>$imgno <span style='color:#808030; '>=</span><span style='color:#808030; '>=</span> $hightlight<span style='color:#808030; '>)</span> <span style='color:#808030; '>?</span> <span style='color:#0000e6; '>"</span><span style='color:#008c00; '>1</span><span style='color:#0000e6; '>"</span> <span style='color:#808030; '>:</span> <span style='color:#0000e6; '>"</span><span style='color:#008c00; '>0</span><span style='color:#0000e6; '>"</span><span style='color:#800080; '>;</span>
+
+        
+            $thumbs <span style='color:#808030; '>.</span><span style='color:#808030; '>=</span> <span style='color:#0000e6; '>'&lt;td width="48"></span>
+<span style='color:#0000e6; '>&lt;p class="framethumbnail">&lt;a href="'</span><span style='color:#808030; '>.</span>$imgno<span style='color:#808030; '>.</span><span style='color:#0000e6; '>'.html"></span>
+<span style='color:#0000e6; '>&lt;img src="thumbnails/'</span><span style='color:#808030; '>.</span>$filename<span style='color:#808030; '>.</span><span style='color:#0000e6; '>'" width="44" height="44" border="'</span><span style='color:#808030; '>.</span>$border<span style='color:#808030; '>.</span><span style='color:#0000e6; '>'" title="'</span><span style='color:#808030; '>.</span>$desctxt<span style='color:#808030; '>.</span><span style='color:#0000e6; '>'" alt="'</span><span style='color:#808030; '>.</span>$desctxt<span style='color:#808030; '>.</span><span style='color:#0000e6; '>'" />&lt;/a></span>
+<span style='color:#0000e6; '>&lt;/p></span>
+<span style='color:#0000e6; '>&lt;/td>'</span>
+<span style='color:#800080; '>;</span>
+        <span style='color:#800080; '>}</span>
+    <span style='color:#800080; '>}</span>
+    $thumbs <span style='color:#808030; '>.</span><span style='color:#808030; '>=</span> <span style='color:#0000e6; '>'&lt;td>&lt;/td>&lt;/tr></span>
+<span style='color:#0000e6; '>&lt;/table></span>
+<span style='color:#0000e6; '>&lt;!-- end thumbs -->'</span><span style='color:#800080; '>;</span>
+    <span style='color:#800000; font-weight:bold; '>return</span> $thumbs<span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+
+<span style='color:#800000; font-weight:bold; '>sub </span>gen_header
+<span style='color:#800080; '>{</span>
+    <span style='color:#800000; font-weight:bold; '>return</span> <span style='color:#0000e6; '>'&lt;!-- begin header --></span>
+<span style='color:#0000e6; '>&lt;!-- end header -->'</span><span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+
+<span style='color:#800000; font-weight:bold; '>sub </span>gen_footer
+<span style='color:#800080; '>{</span>
+    <span style='color:#800000; font-weight:bold; '>return</span> <span style='color:#0000e6; '>'&lt;!-- begin footer --></span>
+<span style='color:#0000e6; '>&lt;!-- end footer -->'</span><span style='color:#800080; '>;</span>
+
+    <span style='color:#800000; font-weight:bold; '>return</span> <span style='color:#0000e6; '>'&lt;!-- begin footer --></span>
+<span style='color:#0000e6; '>&lt;script type="text/javascript"></span>
+<span style='color:#0000e6; '>var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");</span>
+<span style='color:#0000e6; '>document.write(unescape("%3Cscript src=</span><span style='color:#0f69ff; '>\'</span><span style='color:#0000e6; '>" + gaJsHost + "google-analytics.com/ga.js</span><span style='color:#0f69ff; '>\'</span><span style='color:#0000e6; '> type=</span><span style='color:#0f69ff; '>\'</span><span style='color:#0000e6; '>text/javascript</span><span style='color:#0f69ff; '>\'</span><span style='color:#007997; '>%3E</span><span style='color:#0000e6; '>%3C/script</span><span style='color:#007997; '>%3E</span><span style='color:#0000e6; '>"));</span>
+<span style='color:#0000e6; '>&lt;/script></span>
+<span style='color:#0000e6; '>&lt;script type="text/javascript"></span>
+<span style='color:#0000e6; '>try {</span>
+<span style='color:#0000e6; '>var pageTracker = _gat._getTracker("UA-1839044-2");</span>
+<span style='color:#0000e6; '>pageTracker._trackPageview();</span>
+<span style='color:#0000e6; '>} catch(err) {}</span>
+<span style='color:#0000e6; '>&lt;/script></span>
+<span style='color:#0000e6; '>&lt;!-- end footer -->'</span><span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+
+<span style='color:#800000; font-weight:bold; '>sub </span>gentargets
+<span style='color:#800080; '>{</span>
+    <span style='color:#800000; font-weight:bold; '>my</span> $sz <span style='color:#808030; '>=</span> @galfiles<span style='color:#800080; '>;</span>
+    
+    <span style='color:#800000; font-weight:bold; '>for</span> <span style='color:#808030; '>(</span>$i<span style='color:#808030; '>=</span><span style='color:#008c00; '>0</span><span style='color:#800080; '>;</span> $i <span style='color:#808030; '>&lt;</span> $sz<span style='color:#800080; '>;</span> $i<span style='color:#808030; '>+</span><span style='color:#808030; '>+</span><span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+        <span style='color:#800000; font-weight:bold; '>my</span> $filename <span style='color:#808030; '>=</span> $galfiles<span style='color:#808030; '>[</span>$i<span style='color:#808030; '>]</span><span style='color:#800080; '>;</span>
+    
+        $filename <span style='color:#808030; '>=</span><span style='color:#808030; '>~</span> <span style='color:#800000; font-weight:bold; '>m</span><span style='color:#800000; '>/</span><span style='color:#808030; '>(</span><span style='color:#0000e6; '>\d</span><span style='color:#0000e6; '>\d</span><span style='color:#808030; '>)</span><span style='color:#808030; '>.</span><span style='color:#808030; '>*</span><span style='color:#800000; '>/</span><span style='color:#800080; '>;</span>
+        <span style='color:#800000; font-weight:bold; '>my</span> $imgno <span style='color:#808030; '>=</span> $1<span style='color:#800080; '>;</span>
+        <span style='color:#800000; font-weight:bold; '>my</span> $desctxt <span style='color:#808030; '>=</span> $galdesc<span style='color:#800080; '>{</span>$filename<span style='color:#800080; '>}</span><span style='color:#800080; '>;</span>
+        
+        <span style='color:#800000; font-weight:bold; '>my</span> @index <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span><span style='color:#0000e6; '>""</span><span style='color:#808030; '>,</span><span style='color:#0000e6; '>""</span><span style='color:#808030; '>,</span><span style='color:#0000e6; '>""</span><span style='color:#808030; '>,</span><span style='color:#0000e6; '>""</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+        $index<span style='color:#808030; '>[</span><span style='color:#008c00; '>0</span><span style='color:#808030; '>]</span> <span style='color:#808030; '>=</span> $galfiles<span style='color:#808030; '>[</span><span style='color:#008c00; '>0</span><span style='color:#808030; '>]</span><span style='color:#800080; '>;</span>
+        <span style='color:#800000; font-weight:bold; '>if</span> <span style='color:#808030; '>(</span>$i <span style='color:#808030; '>=</span><span style='color:#808030; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+            $index<span style='color:#808030; '>[</span><span style='color:#008c00; '>1</span><span style='color:#808030; '>]</span> <span style='color:#808030; '>=</span> $galfiles<span style='color:#808030; '>[</span>$sz<span style='color:#808030; '>-</span><span style='color:#008c00; '>1</span><span style='color:#808030; '>]</span><span style='color:#800080; '>;</span>
+        <span style='color:#800080; '>}</span> <span style='color:#800000; font-weight:bold; '>else</span> <span style='color:#800080; '>{</span>
+            $index<span style='color:#808030; '>[</span><span style='color:#008c00; '>1</span><span style='color:#808030; '>]</span> <span style='color:#808030; '>=</span> $galfiles<span style='color:#808030; '>[</span>$i<span style='color:#808030; '>-</span><span style='color:#008c00; '>1</span><span style='color:#808030; '>]</span><span style='color:#800080; '>;</span>
+        <span style='color:#800080; '>}</span>
+        <span style='color:#800000; font-weight:bold; '>if</span> <span style='color:#808030; '>(</span>$i <span style='color:#808030; '>=</span><span style='color:#808030; '>=</span> $sz <span style='color:#808030; '>-</span> <span style='color:#008c00; '>1</span><span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+            $index<span style='color:#808030; '>[</span><span style='color:#008c00; '>2</span><span style='color:#808030; '>]</span> <span style='color:#808030; '>=</span> $galfiles<span style='color:#808030; '>[</span><span style='color:#008c00; '>0</span><span style='color:#808030; '>]</span><span style='color:#800080; '>;</span>
+        <span style='color:#800080; '>}</span> <span style='color:#800000; font-weight:bold; '>else</span> <span style='color:#800080; '>{</span>
+            $index<span style='color:#808030; '>[</span><span style='color:#008c00; '>2</span><span style='color:#808030; '>]</span> <span style='color:#808030; '>=</span> $galfiles<span style='color:#808030; '>[</span>$i<span style='color:#808030; '>+</span><span style='color:#008c00; '>1</span><span style='color:#808030; '>]</span><span style='color:#800080; '>;</span>
+        <span style='color:#800080; '>}</span>
+        $index<span style='color:#808030; '>[</span><span style='color:#008c00; '>3</span><span style='color:#808030; '>]</span> <span style='color:#808030; '>=</span> $galfiles<span style='color:#808030; '>[</span>$sz<span style='color:#808030; '>-</span><span style='color:#008c00; '>1</span><span style='color:#808030; '>]</span><span style='color:#800080; '>;</span>
+        
+        <span style='color:#800000; font-weight:bold; '>for</span> <span style='color:#808030; '>(</span>@index<span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+            <span style='color:#800000; font-weight:bold; '>s</span><span style='color:#800000; '>/</span><span style='color:#808030; '>(</span><span style='color:#0000e6; '>\d</span><span style='color:#0000e6; '>\d</span><span style='color:#808030; '>)</span><span style='color:#808030; '>.</span><span style='color:#808030; '>*</span><span style='color:#800000; '>/</span><span style='color:#0000e6; '>$1</span><span style='color:#800000; '>/</span><span style='color:#800080; '>;</span>
+        <span style='color:#800080; '>}</span>
+        
+
+        <span style='color:#800000; font-weight:bold; '>open</span> <span style='color:#808030; '>(</span>OUT_TARGET<span style='color:#808030; '>,</span> <span style='color:#0000e6; '>"></span><span style='color:#0000e6; '>$imgno</span><span style='color:#0000e6; '>.html"</span><span style='color:#808030; '>)</span> <span style='color:#808030; '>or</span> <span style='color:#800000; font-weight:bold; '>die</span> $!<span style='color:#800080; '>;</span>
+        
+        <span style='color:#800000; font-weight:bold; '>my</span> $menu <span style='color:#808030; '>=</span> gen_menu<span style='color:#808030; '>(</span>$gallery_name<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+        <span style='color:#800000; font-weight:bold; '>my</span> $thumbs <span style='color:#808030; '>=</span> gen_thumbs<span style='color:#808030; '>(</span>$imgno<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+        
+        <span style='color:#800000; font-weight:bold; '>print</span> OUT_TARGET
+<span style='color:#0000e6; '>'&lt;?xml version="1.0" encoding="UTF-8"?></span>
+<span style='color:#0000e6; '></span>
+<span style='color:#0000e6; '>&lt;!DOCTYPE html</span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"</span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"></span>
+<span style='color:#0000e6; '></span>
+<span style='color:#0000e6; '>&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"></span>
+<span style='color:#0000e6; '>&lt;head></span>
+<span style='color:#0000e6; '></span>
+<span style='color:#0000e6; '>&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /></span>
+<span style='color:#0000e6; '>&lt;meta name="keywords" content="demontagu, photography, black and white photography, 6x6, medium format, 35 mm" /></span>
+<span style='color:#0000e6; '>&lt;meta name="description" content="demontagu.com photography" /></span>
+<span style='color:#0000e6; '>&lt;meta name="author" content="demontagu.com" /></span>
+<span style='color:#0000e6; '>&lt;meta name="generator" content="demontagu.com/gen/galgen.html" /></span>
+<span style='color:#0000e6; '></span>
+<span style='color:#0000e6; '>&lt;title>demontagu.com - '</span><span style='color:#808030; '>.</span>$gallery_name<span style='color:#808030; '>.</span><span style='color:#0000e6; '>' - '</span><span style='color:#808030; '>.</span>$desctxt<span style='color:#808030; '>.</span><span style='color:#0000e6; '>'&lt;/title></span>
+<span style='color:#0000e6; '>&lt;link rel="stylesheet" href="../../css/style2.css" type="text/css" /></span>
+<span style='color:#0000e6; '>&lt;/head></span>
+<span style='color:#0000e6; '>&lt;body></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&lt;div id="shim">&lt;/div></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&lt;div id="wrapper"></span>
+<span style='color:#0000e6; '>'</span><span style='color:#808030; '>.</span>gen_header<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>.</span><span style='color:#0000e6; '>'</span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&lt;table align="center" width="660"></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&lt;tr></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&lt;td valign="top" width="160"></span>
+<span style='color:#0000e6; '>'</span><span style='color:#808030; '>.</span>$menu<span style='color:#808030; '>.</span><span style='color:#0000e6; '>'</span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&lt;/td></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&lt;td width="500"></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&lt;table align="center"></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;tr></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;td></span>
+<span style='color:#0000e6; '>&lt;!-- begin img --></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;table class="image" border="0" cellspacing="0" cellpadding="0"></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;tr>&lt;td height="480" width="500"></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;div align="center"></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;a href="'</span><span style='color:#808030; '>.</span>$index<span style='color:#808030; '>[</span><span style='color:#008c00; '>2</span><span style='color:#808030; '>]</span><span style='color:#808030; '>.</span><span style='color:#0000e6; '>'.html"></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;img border="0" src="images/'</span><span style='color:#808030; '>.</span>$filename<span style='color:#808030; '>.</span><span style='color:#0000e6; '>'" title="next" alt="'</span><span style='color:#808030; '>.</span>$desctxt<span style='color:#808030; '>.</span><span style='color:#0000e6; '>'" /></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/a></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/div></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/td>&lt;/tr></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;tr>&lt;td></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;table width="100%"></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;tr></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;td align="left" valign="top"></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;span class="textdesc">'</span><span style='color:#808030; '>.</span>$desctxt<span style='color:#808030; '>.</span><span style='color:#0000e6; '>'&lt;/span></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/td></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;td align="right" valign="top"></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;span class="textreg"></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;a href="'</span><span style='color:#808030; '>.</span>$index<span style='color:#808030; '>[</span><span style='color:#008c00; '>1</span><span style='color:#808030; '>]</span><span style='color:#808030; '>.</span><span style='color:#0000e6; '>'.html">&lt;img src="../../nav/nav_prev.png" border="0" title="previous" alt="previous" />&lt;/a></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;a href="'</span><span style='color:#808030; '>.</span>$index<span style='color:#808030; '>[</span><span style='color:#008c00; '>2</span><span style='color:#808030; '>]</span><span style='color:#808030; '>.</span><span style='color:#0000e6; '>'.html">&lt;img src="../../nav/nav_next.png" border="0" title="next" alt="next" />&lt;/a></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/span></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/td>&lt;/tr></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/table></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/td>&lt;/tr></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&lt;/table></span>
+<span style='color:#0000e6; '>&lt;!-- end img --></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&lt;/td></span>
+<span style='color:#0000e6; '>&#xa0;&lt;/tr></span>
+<span style='color:#0000e6; '>&#xa0;&lt;tr></span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&lt;td width="500"></span>
+<span style='color:#0000e6; '>'</span><span style='color:#808030; '>.</span>$thumbs<span style='color:#808030; '>.</span><span style='color:#0000e6; '>'</span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&lt;/td></span>
+<span style='color:#0000e6; '>&#xa0;&lt;/tr></span>
+<span style='color:#0000e6; '>&lt;/table></span>
+<span style='color:#0000e6; '>&lt;/td></span>
+<span style='color:#0000e6; '>&lt;/tr></span>
+<span style='color:#0000e6; '>&lt;/table></span>
+<span style='color:#0000e6; '>&lt;/div></span>
+<span style='color:#0000e6; '>'</span><span style='color:#808030; '>.</span>gen_footer<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>.</span><span style='color:#0000e6; '>'</span>
+<span style='color:#0000e6; '>&lt;/body></span>
+<span style='color:#0000e6; '>&lt;/html></span>
+<span style='color:#0000e6; '>'</span><span style='color:#800080; '>;</span>
+        <span style='color:#800000; font-weight:bold; '>close</span> <span style='color:#808030; '>(</span>OUT_TARGET<span style='color:#808030; '>)</span> <span style='color:#808030; '>or</span> <span style='color:#800000; font-weight:bold; '>die</span> $!<span style='color:#800080; '>;</span>
+    <span style='color:#800080; '>}</span>
+<span style='color:#800080; '>}</span>
+
+<span style='color:#696969; '>#-------------------------------------------------------------------------------------------------------</span>
+
+counstructor<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+gentargets<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+</pre>
+</body>
+</html>

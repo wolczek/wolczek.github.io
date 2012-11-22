@@ -1,0 +1,23 @@
+application: demontagucom
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /css
+  static_dir: css
+
+- url: /nav
+  static_dir: nav
+
+- url: /(.*\.(gif|png|jpg))
+  static_files: static/\1
+  upload: static/(.*\.(gif|png|jpg))
+
+- url: /(Sitemap\.xml)
+  static_files: \1
+  upload: Sitemap\.xml
+  mime_type: application/xml
+  
+- url: .*
+  script: main.py

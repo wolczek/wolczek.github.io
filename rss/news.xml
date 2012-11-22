@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <channel>
+    <atom:link href="http://demontagu.com/rss/news.xml" rel="self" type="application/rss+xml" />
+    
+    <title>demontagu.com news and site updates</title>
+    <link>http://demontagu.com</link>
+    <description>demontagu.com news and site updates</description>
+    <language>en</language>
+    <pubDate>1 May 2000 00:00:00 UT</pubDate>
+    <lastBuildDate>13 May 2009 11:16:00 UT</lastBuildDate>
+    <docs>http://demontagu.com/rss/news.rss</docs>
+    <generator>handmade xml file</generator>
+    <webMaster>alexandre@demontagu.com (Alexandre)</webMaster>
+ 
+    <item>
+      <title>WELCOME! demontagu.com is opened now !</title>
+      <link>http://demontagu.com</link>
+      <description>
+      <![CDATA[Welcome to my personal site!
+        <div>
+          <a href="http://demontagu.com/">
+            <img border="0" src="http://demontagu.com/logo2.jpg" alt="demontagu.com photography" />
+          <p style="font-size:9px;">demontagu.com photography</p>
+          </a>
+        </div>]]>
+      </description>
+      <pubDate>07 May 2009 14:05:59 UT</pubDate>
+      <guid isPermaLink="false">tag:demontagu.com:20090507140559</guid>
+    </item>
+
+    <item>
+      <title>redik - the happiest man</title>
+      <link>http://demontagu.com/galleries/02/10.html</link>
+      <description>
+      <![CDATA[
+        <div>
+          <a href="http://demontagu.com/galleries/02/10.html">
+            <p style="font-size:10px;">&nbsp; redik - the happiest man was added to people gallery</p>
+            <p><img border="0" src="http://demontagu.com/galleries/02/thumbnails/10redik.jpg" alt="redik" /></p>
+          </a>
+        </div>]]>
+      </description>
+      <pubDate>13 May 2009 11:16:00 UT</pubDate>
+      <guid isPermaLink="false">tag:demontagu.com:20090728235800</guid>
+    </item>
+
+    <item>
+      <title>julia</title>
+      <link>http://demontagu.com/galleries/02/08.html</link>
+      <description>
+      <![CDATA[
+        <div>
+          <a href="http://demontagu.com/galleries/02/08.html">
+            <p style="font-size:10px;">&nbsp; julia was added to people gallery</p>
+            <p><img border="0" src="http://demontagu.com/galleries/02/images/08jbackv2.jpg" alt="julia" /></p>
+          </a>
+        </div>]]>
+      </description>
+      <pubDate>28 Jul 2009 20:58:00 UT</pubDate>
+      <guid isPermaLink="false">tag:demontagu.com:20090728235800</guid>
+    </item>
+ 
+  </channel>
+</rss>

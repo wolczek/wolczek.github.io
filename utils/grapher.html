@@ -1,0 +1,500 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//RU" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0045)http://school35.ucoz.ru/grapher/grapher_e.htm -->
+<HTML><HEAD><META http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+ 
+<TITLE>Online-Построитель графиков функций</TITLE>
+<LINK rel="stylesheet" type="text/css" href="./grapher_files/new.css">
+<STYLE type="text/css">
+</STYLE>
+<SCRIPT type="text/javascript" src="./grapher_files/scriptings.js">
+</SCRIPT>
+<SCRIPT type="text/javascript">
+<!--
+function mkFourier(f)
+{
+    var htm = '';
+    var na = parseInt(f.FOU_NA.value), nz = parseInt(f.FOU_NZ.value), dn = parseFloat(f.FOU_DN.value);
+    var sgn = f.FOU_SGN[2].checked? -1 : f.FOU_SGN[3].checked? 1 : 0;
+    for (var i = na; i <= nz; i += (dn || nz))
+    {
+        htm += ((i == na)? '' : (sgn < 0 || !sgn && f.FOU_SGN[1].checked)? '-' : '+') + f.FOU_TERM.value.replace(/\s/g, '').replace(/sin/g,'sim').replace(/n/gi, ''+i).replace(/sim/g,'sin');
+        sgn = -sgn;
+    }
+    f.FOU_OUT.value = htm;
+}
+//-->
+</SCRIPT>
+</HEAD><BODY bgcolor="#ffffff">
+<FORM name="fo" action="javascript:if (window.mkGraph) mkGraph(this);" onsubmit="return false;">
+<A name="top"> </A>
+<CENTER>
+<DIV id="body1">
+
+<TABLE cellpadding="6" width="740">
+<TBODY><TR>
+<TD align="left">
+<B><BIG>Online-Построитель графиков функций</BIG></B>
+<BR>
+<SMALL>Реализация проекта на JavaScript<BR>Дымченко Максим, Дымченко Т.Н.</SMALL>
+</TD>
+</TR>
+</TBODY></TABLE>
+
+<DIV id="inputs" style="position: relative; text-align: left; background-image: initial; background-repeat: initial; background-attachment: initial; -webkit-background-clip: initial; -webkit-background-origin: initial; background-color: rgb(238, 238, 238); width: 979px; border-left-width: 1px; border-left-style: solid; border-left-color: rgb(214, 214, 214); border-right-width: 1px; border-right-style: solid; border-right-color: rgb(214, 214, 214); border-top-width: 1px; border-top-style: solid; border-top-color: rgb(214, 214, 214); background-position: initial initial; ">
+<DIV style="padding-top:8px;padding-right:8px;padding-left:8px;">
+<INPUT type="submit" class="bt2" value="Построить график" onclick="if (window.mkGraph) mkGraph(this.form); return false;">
+<INPUT name="Add" type="checkbox">не удалять построенные графики&nbsp; &nbsp;
+<INPUT type="button" class="bt2" value="Удалить графики" onmouseup="this.form.F.focus()" onclick="delGraphs(1)">
+<BR>
+x min <INPUT name="XA" type="text" class="input" size="8" maxlength="13" value="-5"> &nbsp;
+x max <INPUT name="XZ" type="text" class="input" size="8" maxlength="13" value="5">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+y min <INPUT name="YA" type="text" class="input" size="8" maxlength="13" value="-5"> &nbsp;
+y max <INPUT name="YZ" type="text" class="input" size="8" maxlength="13" value="5">
+<BR>
+<B>Задайте функцию f(x)</B>
+<SMALL> (число функций, видимых  в поле ввода, равно 5)</SMALL>:
+<BR>
+<TEXTAREA name="F" class="input" cols="70" rows="4">cos(pi*x) / (-LN2*x)  </TEXTAREA>
+</DIV>
+</DIV>
+</DIV>
+
+<DIV id="graphframe" style="position: relative; left: 0px; top: 0px; width: 979px; height: 830px; background-image: initial; background-repeat: initial; background-attachment: initial; -webkit-background-clip: initial; -webkit-background-origin: initial; background-color: rgb(238, 238, 238); border-left-width: 1px; border-left-style: solid; border-left-color: rgb(214, 214, 214); border-right-width: 1px; border-right-style: solid; border-right-color: rgb(214, 214, 214); border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(214, 214, 214); background-position: initial initial; "><DIV id="bglyr" style="position:absolute;left:50px;top:4px;width:805px;height:805px;clip:rect(0,805px,805px,0);overflow:hidden;background-color:#ffffff;text-align:left;"></DIV><DIV id="gridlyr" style="position:absolute;left:50px;top:4px;width:805px;height:805px;clip:rect(0,805px,805px,0);overflow:hidden;text-align:left;"></DIV><DIV id="cnvlyr" style="position: absolute; left: 50px; top: 4px; width: 805px; height: 805px; clip: rect(0px 805px 805px 0px); overflow-x: hidden; overflow-y: hidden; text-align: left; z-index: 1; cursor: crosshair; "></DIV><DIV id="xlyr" style="position:absolute;left:50px;top:809px;width:805px;height:22px;text-align:left;"></DIV><DIV id="ylyr" style="position:absolute;left:0px;top:4px;width:50px;height:805px;text-align:right;"></DIV><DIV id="opts" style="position:absolute;left:858px;top:206px;width:124px;height:804px;text-align:left;"><INPUT name="GRID" type="checkbox" checked="" onclick="setTimeout(&#39;setGridVis();&#39;, 10)">Показать сетку<BR>&nbsp;<BR><INPUT name="XYRATIO" type="checkbox">Неизменяемый масштаб осей, равный шаг  [*]<BR>&nbsp;<BR><INPUT name="FITWND" type="checkbox">Полноэкранный режим построения [*]<BR>&nbsp;<BR><INPUT name="PRT" type="checkbox" onclick="setTimeout(&#39;prt();&#39;, 10)">Предварительный просмотр<BR>&nbsp;<BR>&nbsp;<BR>&nbsp;<BR>[*] видимый после изменения</DIV></DIV>
+<DIV id="terms" style="position:relative;left:0px;top:0px;width:640px;padding:3px;text-align:left;">
+</DIV>
+<DIV id="body2">
+
+<TABLE cellpadding="14">
+<TBODY><TR>
+<TD align="left" style="padding-top:8px;padding-right:8px;padding-left:50px;">
+<BIG>&nbsp;
+<BR><B>Правила задания функции</B></BIG>
+<TABLE>
+<TBODY><TR>
+<TD valign="top">
+<B>+ - * : /</B>
+<BR>
+</TD>
+<TD>Плюс, минус, деление, умножение. Знак умножения <B>*</B> может быть опущен. Пример: 
+                   <B style="white-space:nowrap;">0.5x^3-3x</B> Для изменения приоритета выполняемых операций используются скобки.
+<BR><BR>
+</TD>
+</TR>
+<TR>
+<TD valign="top">
+<I>основание</I><B>^</B><I>степень</I>
+<BR>или<BR>
+<SPAN style="white-space:nowrap;"><B>p(</B>основание<B>,</B>степень<B>)</B></SPAN>
+</TD>
+<TD>
+Возведение в степень основание<SUP>степень</SUP>, например <B>p(x,2)</B> или <B>x^2</B>&nbsp;. Если основание или степень являются выражениями, то они заключаются в скобки. Например (x/3) ^ (2x), эквивалент p(x/3, 2x). Операция возведение в степень может быть заменена умножением. Например <B>x^3</B> эквивалентен выражению <B>xxx</B>, <B>tan(x)^2</B> можно записать в виде <B>tan(x)tan(x)</B>.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>root(</B>аргумент<B>,</B>индекс<B>)</B></SPAN>
+</TD>
+<TD> Корень n-степени (индекс) из числа (аргумент). Например: <B style="white-space:nowrap;">root(x,3)</B> возвращает значение кубического корня из x, <B style="white-space:nowrap;">root(tan(x),2)</B> - квадратный корень из tan(x).
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top"> <B>sqrt()</B>
+</TD>
+<TD> Квадратный корень из числа. Эквивалентен выражению root(<I>аргумент</I>,2)
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>logn(</B>аргумент<B>,</B>основание<B>)</B></SPAN>
+</TD>
+<TD>
+Логарифм аргумента по основанию.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<B>ln()</B>
+</TD>
+<TD>
+Натуральный логарифм аргумента (по основанию константы E).
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<B>lg()</B>
+</TD>
+<TD>
+Логарифм по основанию 10, эквивалент <SPAN style="white-space:nowrap;">logn(<I>аргумент</I>,10)</SPAN>.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<B>lb()</B>
+</TD>
+<TD>
+Логарифм по основанию 2.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<B>exp()</B>
+</TD>
+<TD>
+Экспонента, эквивалент E^<I>аргумент</I>
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<B>sin()</B>
+</TD>
+<TD>
+Синус аргумента.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<B>cos()</B>
+</TD>
+<TD>
+Косинус аргумента.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<B>tan()</B>
+</TD>
+<TD>
+Тангенс аргумента.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>cot()</B></SPAN>
+</TD>
+<TD>
+Котангенс аргумента.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<B>sec()</B>
+</TD>
+<TD>
+Секанс аргумента, эквивалент 1/cos(<I>аргумент</I>).
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<B>csc()</B>
+</TD>
+<TD>
+Косеканс аргумента, эквивалент 1/sin(<I>аргумент</I>).
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>asin()</B></SPAN>
+</TD>
+<TD>
+Арксинус аргумента.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>acos()</B></SPAN>
+</TD>
+<TD>
+Арккосинус аргумента.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>atan()</B></SPAN>
+</TD>
+<TD>
+Арктангенс аргумента.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>acot()</B></SPAN>
+</TD>
+<TD>
+Арккотангенс аргумента. 
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>asec()</B></SPAN>
+</TD>
+<TD>
+Арксеканс, обратный секанс.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>acsc()</B></SPAN>
+</TD>
+<TD>
+Арккосеканс, обратный косеканс.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>sinh()</B></SPAN>
+</TD>
+<TD>
+Гиперболический синус.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>cosh()</B></SPAN>
+</TD>
+<TD>
+Гиперболический косинус.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>tanh()</B></SPAN>
+</TD>
+<TD>
+Гиперболический тангенс.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>coth()</B></SPAN>
+</TD>
+<TD>
+Гиперболический котангенс.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>sech()</B></SPAN>
+</TD>
+<TD>
+Гиперболический секанс.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>csch()</B></SPAN>
+</TD>
+<TD>
+Гиперболический косеканс.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>asinh()</B></SPAN>
+</TD>
+<TD>
+Синус области.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>acosh()</B></SPAN>
+</TD>
+<TD>
+Косинус области.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>atanh()</B></SPAN>
+</TD>
+<TD>
+Тангенс области.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<SPAN style="white-space:nowrap;"><B>acoth()</B></SPAN>
+</TD>
+<TD>
+Котангенс области.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<B style="white-space:nowrap;">round()</B>
+</TD>
+<TD>
+Округление аргумента функции.
+<BR><BR>
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<B>abs()</B> или <B>|&nbsp;|</B>
+</TD>
+<TD>
+Абсолютное значение аргумента, модуль числа. Например: <B style="white-space:nowrap;">2abs(sin(x))</B> или <B style="white-space:nowrap;">2|sin(x)|</B>&nbsp;.
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<B>sgn()</B>
+</TD>
+<TD>
+Определение знака функции.
+<BR>
+<TABLE>
+<TBODY><TR>
+<TD rowspan="3" valign="middle">
+<B style="white-space:nowrap;">sgn(x)</B>&nbsp;&nbsp;=&nbsp;&nbsp;
+</TD>
+<TD>&nbsp;1 для x &gt; 0</TD>
+</TR>
+<TR>
+<TD>&nbsp;0 для x = 0</TD>
+</TR>
+<TR>
+<TD>-1 для x &lt; 0</TD>
+</TR>
+</TBODY></TABLE> 
+</TD>
+</TR>
+</TBODY></TABLE>
+</TD>
+</TR>
+
+<TR>
+<TD align="left" style="padding-top:8px;padding-right:8px;padding-left:50px;">
+<BIG>&nbsp;<BR><B>Определенные значения констант</B>
+<TABLE>
+<TBODY><TR>
+<TD valign="top">
+<B>rand</B>
+</TD>
+<TD>
+Случайное число в интервале от 0 до 1.
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<B>E</B>
+</TD>
+<TD>
+Экспонента е=2.718281828459045...
+</TD>
+</TR>
+
+<TR>
+<TD valign="top">
+<B>PI</B>
+</TD>
+<TD>
+число Пи=3.141592653589793...
+</TD>
+</TR>
+
+</TBODY></TABLE>
+</BIG></TD>
+</TR>
+<TR>
+<TD align="left" style="padding-top:8px;padding-right:8px;padding-left:50px;">
+<BIG>&nbsp;<BR><B>Примечание</B></BIG>
+<BR>
+<B>X</B> - независимая переменная функции.
+<BR>&nbsp;<BR>
+Диапазон допустимых значений для аргумента функции должен не должен превышать (-10<SUP>12</SUP>;10<SUP>12</SUP>).
+</TD>
+</TR>
+<TR>
+<TD align="left" style="padding-top:8px;padding-right:8px;padding-left:50px;">
+<BIG>&nbsp;<BR><B>Построение нескольких графиков функций</B></BIG>
+<BR>
+Online-Построитель графиков функций позволяет строить в одной координатной плоскости одновременно несколько графиков функций, разделённых между собой точкой с запятой. Пример правильного разделения функций представлен ниже:
+<BR>
+<B>
+sqrt(16*(1-x^2/2));
+<BR>
+-sqrt(16*(1-x^2/2));
+<BR>
+sqrt(2*(1-x^2/16));
+<BR>
+-sqrt(2*(1-x^2/16))
+</B>
+</TD>
+</TR>
+<TR>
+</TR></TBODY></TABLE>
+
+
+<SCRIPT type="text/javascript">
+<!--
+var G_LANG = "E";
+//-->
+</SCRIPT>
+<SCRIPT type="text/javascript" src="./grapher_files/grapher.js"></SCRIPT><DIV id="coordtip" style="position:absolute;left:0px;top:0px;width:0px;height:0px;text-align:left;"></DIV>
+<SCRIPT type="text/javascript" src="./grapher_files/grapherstr.js"></SCRIPT>
+
+</DIV></CENTER></FORM></BODY></HTML>

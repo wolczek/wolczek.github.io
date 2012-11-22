@@ -1,0 +1,48 @@
+table#canvas {
+    background-color: #fff2f2;
+}
+
+table.thumbs {
+    background: #d0d0df;
+}
+
+table.image { 
+    border: 1px solid #a08080; 
+}
+
+div.center {
+    border: 1px solid #ffa2ff;
+}
+
+.textreg { 
+    border: 1px solid #808080;
+} 
+
+.menu { 
+    background: #fffff2;
+}
+
+.menu_l1 {
+    font-family: arial; 
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.menu_l2 {
+    font-family: arial; 
+    font-weight: normal;
+    font-size: 12px;
+}
+
+.menu_l2p {
+    font-family: arial; 
+    font-weight: normal;
+    font-size: 12px;
+    margin: 0 0 0 20px;
+}
+
+.textdesc { 
+    background-color: #e2fff2;
+}
+
